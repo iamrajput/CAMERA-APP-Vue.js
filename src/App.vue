@@ -1,31 +1,50 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <Camera v-on:takePicture="this.takePicture"/>
+    <Gallery/>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+<script>
+import Camera from "./components/Camera";
+import Gallery from "./components/Gallery";
+import { win32 } from "path";
+export default {
+  name: "app",
+  components: {
+    Camera,
+    Gallery
+  },
+  methods: {
+    takePicture() {
+      let ratio = (window.innerHeight = window.innerWidth ? 16 / 9 : 9 / 16);
+      const picture = document.querySelector("canvas");
+      picture.width = window.innerWidth < 800 ? window.innerWidth : 800;
+      picture.height = window.innerWidth / ratio;
+      const ctx = picture.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(
+        document.querySelector("video"),
+        0,
+        0,
+        picture.width,
+        picture.height
+      );
+    }
+  }
+};
+</script>
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+
+<style lang="scss">
+body {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: seashell;
+  overflow-x: hidden;
+
 }
 </style>
